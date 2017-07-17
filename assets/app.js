@@ -9,7 +9,8 @@ $(document).ready(function() {
 		var currentTime = $.now();
 		var nextArrival = currentTime + newFreq;
 		var minutesAway = nextArrival - currentTime;
-		//if form is incorrectly filled out show alert and stop code:
+
+		//if any input in form is blank, alert and stop code:
 		if (newTrainName === ''||newDestination === ''||newFirstTrainTime === ''||newFreq === ''){
 			$('.alert-danger').css('display','initial')
 			return;
@@ -23,7 +24,7 @@ $(document).ready(function() {
 		$('table').append('<tr><td>' + newTrainName + '</td><td>' + newDestination + '</td><td>' + newFreq + '</td><td>' + newFirstTrainTime + '</td><td>' + minutesAway + '</td></tr>')
 
 		//clear form after submission:
-		for (var i = 0; i < 3; i++) {
+		for (var i = 0; i < $('form').length; i++) {
 			$('form')[i].reset();
 		};
 	});
