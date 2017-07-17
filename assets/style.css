@@ -1,3 +1,8 @@
-.glyphicon {
-	display: inline;
+form {
+	margin: 8px;
+}
+
+.alert-danger {
+	margin-top: 5px;
+	display: none;
 }
