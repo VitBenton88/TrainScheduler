@@ -1,11 +1,12 @@
 $(document).ready(function() {
+	
 	$('.submit').click(function(){
 		event.preventDefault();
 		var newTrainName = $('#TrainName').val().trim();
 		var newDestination = $('#Destination').val().trim();
 		var newFirstTrainTime = $('#FirstTrainTime').val().trim();
 		var newFreq = $('#Freq').val().trim();
-		var currentTime = moment();
+		var currentTime = $.now();
 		var nextArrival = currentTime + newFreq;
 		var minutesAway = nextArrival - currentTime;
 		//if form is incorrectly filled out show alert and stop code:
