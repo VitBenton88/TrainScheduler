@@ -1,4 +1,17 @@
 $(document).ready(function() {
+// Initialize Firebase
+	var config = {
+		    apiKey: "AIzaSyDIfwR9O2Fk-QAjzJVil8aBuvz_RMSUgJM",
+		    authDomain: "trainscheduler-930e9.firebaseapp.com",
+		    databaseURL: "https://trainscheduler-930e9.firebaseio.com",
+		    projectId: "trainscheduler-930e9",
+		    storageBucket: "trainscheduler-930e9.appspot.com",
+		    messagingSenderId: "464054359921"
+		  };
+		  firebase.initializeApp(config);
+
+	//FIREBASE END ----------------------
+
 	
 	$('.submit').click(function(){
 		event.preventDefault();
