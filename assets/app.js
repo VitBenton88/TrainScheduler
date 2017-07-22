@@ -13,8 +13,6 @@ $(document).ready(function() {
 		  var database = firebase.database();
 
 	//FIREBASE END ----------------------
-
-
 	
 	$('.submit').click(function(){
 		event.preventDefault();
@@ -22,18 +20,15 @@ $(document).ready(function() {
 		var newDestination = $('#Destination').val().trim();
 		var newFirstTrainTime = $('#FirstTrainTime').val().trim();
 		var newFreq = $('#Freq').val().trim();
-		// var currentTime = $.now();
-		// var nextArrival = currentTime + newFreq;
-		// var minutesAway = nextArrival - currentTime;
 
 		// if any input in form is blank, alert and stop code:
-		// if (newTrainName === ''||newDestination === ''||newFirstTrainTime === ''||newFreq === ''){
-		// 	$('.alert-danger').css('display','initial')
-		// 	return;
-		// }
-		// else {
-		// 	$('.alert-danger').css('display','none')
-		// };
+		if (newTrainName === ''||newDestination === ''||newFirstTrainTime === ''||newFreq === ''){
+			$('.alert-danger').css('display','initial')
+			return;
+		}
+		else {
+			$('.alert-danger').css('display','none')
+		};
 
 		// store new train values to friebase:
 
@@ -42,26 +37,45 @@ $(document).ready(function() {
 			Name: newTrainName,
 			Destination: newDestination,
 			Freq: newFreq,
+			firstArrival: newFirstTrainTime,
+			dateAdded: firebase.database.ServerValue.TIMESTAMP,
 		});
 
 		//clear form after submission:
 		for (var i = 0; i < $('form').length; i++) {
 			$('form')[i].reset();
 		};
-	});
-
 	//$('.submit').click END -----------------------------------------------
-
-	//publish two train objects, this is the default view:
-	// database.ref().on("value", function(snapshot) {
-	// 	$('tbody').append('<tr><td>' + snapshot.val().Train1.Name + '</td><td>' + snapshot.val().Train1.Destination + '</td><td>' + snapshot.val().Train1.Freq + '</td><td>' + snapshot.val().Train1.NextArr + '</td></tr>')
-	// 	$('tbody').append('<tr><td>' + snapshot.val().Train2.Name + '</td><td>' + snapshot.val().Train2.Destination + '</td><td>' + snapshot.val().Train2.Freq + '</td><td>' + snapshot.val().Train2.NextArr + '</td></tr>')  	
-	// });
-
-	//listen for additions made and publish accordingly:
-	database.ref().on("child_added", function(snapshot) {
-		$('tbody').append('<tr><td>' + snapshot.val().Name + '</td><td>' + snapshot.val().Destination + '</td><td>' + snapshot.val().Freq + '</td><td>' + snapshot.val().NextArr + '</td></tr>')
 	});
+
+	//listen for additions made and publish accordingly, by timestamp:
+		database.ref().orderByChild("dateAdded").on("child_added", function(snapshot){
+
+			var FBname = snapshot.val().Name;//capture train name from firebase
+			var FBdestination = snapshot.val().Destination;//capture destination from firebase
+			var FBfeq = snapshot.val().Freq;//capture frequency from firebase
+			var FBarrivalTime = snapshot.val().firstArrival;//capture arrival time from firebase
+
+   			var militaryFormat = "HH:mm";//set format for military time display
+   			var normalFormat = "hh:mm A"//set format for normal time display
+    		var militaryArrivalTime = moment(FBarrivalTime, militaryFormat);//format arrival time from firebase into military time
+			var minAway = moment(militaryArrivalTime).diff(moment(), "minutes",);//calculate difference between now and arrival time in minutes
+			var displayArrivalTimeNORM = moment(FBarrivalTime, normalFormat).format(normalFormat);//display next arrival time in html as normal format
+
+			//post to HTML:
+			$('tbody').append('<tr><td>'
+			 + snapshot.val().Name
+			 + '</td><td>' 
+			 + snapshot.val().Destination 
+			 + '</td><td>' 
+			 + snapshot.val().Freq 
+			 + '</td><td>'
+			 + displayArrivalTimeNORM
+			 + '</td><td>'
+			 + minAway
+			 + '</td></tr>')
+
+    });
 
 //----------------------------------------------------------------END OF SCRIPT	
 });
