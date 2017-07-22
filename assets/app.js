@@ -13,7 +13,23 @@ $(document).ready(function() {
 		  var database = firebase.database();
 
 	//FIREBASE END ----------------------
+
+
+	//	DISPLAY CURRENT TIME --------------------
 	
+
+	function publishTime (){
+	var currentTimeFormat = "hh:mm:ss A";
+	var currentTime = moment(moment(), currentTimeFormat);
+	var currentTimeFormatted = currentTime.format(currentTimeFormat);
+	$('#theTime').html('Current Time: ' + currentTimeFormatted)
+	};
+
+	setInterval(publishTime, 1000);
+
+	//	DISPLAY CURRENT TIME END --------------------
+	
+
 	$('.submit').click(function(){
 		event.preventDefault();
 		var newTrainName = $('#TrainName').val().trim();

@@ -6,3 +6,7 @@ form {
 	margin-top: 5px;
 	display: none;
 }
+
+#theTime {
+	font-weight: bolder;
+}
