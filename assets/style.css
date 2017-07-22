@@ -10,3 +10,8 @@ form {
 #theTime {
 	font-weight: bolder;
 }
+
+.arrivingAlert {
+	color: red;
+	font-weight: bolder;
+}

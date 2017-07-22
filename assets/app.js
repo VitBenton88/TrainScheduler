@@ -63,43 +63,83 @@ $(document).ready(function() {
 		};
 	});
 
+	function emptyTableBody (){
+		$('tbody').empty();
+	};
+
 	//listen for additions made and publish accordingly, by timestamp:
+	function calculateAndPublish (){
 		database.ref().orderByChild("dateAdded").on("child_added", function(snapshot){
 
 			var FBname = snapshot.val().Name;//capture train name from firebase
 			var FBdestination = snapshot.val().Destination;//capture destination from firebase
-			var FBfeq = snapshot.val().Freq;//capture frequency from firebase
+			var FBfreq = snapshot.val().Freq;//capture frequency from firebase
 			var FBarrivalTime = snapshot.val().firstArrival;//capture arrival time from firebase
 
    			var militaryFormat = "HH:mm";//set format for military time display
    			var normalFormat = "hh:mm A"//set format for normal time display
-    		var militaryArrivalTime = moment(FBarrivalTime, militaryFormat);//format arrival time from firebase into military time
-			var minAway = moment(militaryArrivalTime).diff(moment(), "minutes",);//calculate difference between now and arrival time in minutes
-			var displayArrivalTimeNORM = moment(FBarrivalTime, normalFormat).format(normalFormat);//display next arrival time in html as normal format
+    		var militaryArrivalTime = moment(FBarrivalTime, militaryFormat);//format arrival time from firebase to display as military time
+    		var normalArrivalTime = moment(FBarrivalTime, normalFormat);//format arrival time from firebase to display as normal time
+    		var nextArrival;
+			var minAway;
 
-			if (minAway < 0){//if minutes away comes out to negative, add 1440 to it to show accurate calculate. 1440 being number of min in a day
-				minAway = minAway + 1440;
+			function negativeMinAwayFix (){
+				if (minAway < 0){//if minutes away comes out to negative, reset time to original start time
+					minAway = minAway + 1440;//add total minutes in day (1440) to estimate because this will be a negative number otherwise
+				};
 			};
 
-			if (minAway === 0){//if min away equals zero, reset min away to new time based on freq, newtime = current time + freq
-
-				console.log('zero');
-
+			function alertArrivingNow(){//if minutes away is zero, change digits to string alerting of immenent arrival
+				if (minAway === 0){
+					minAway = '<p class="arrivingAlert">ARRIVING NOW</p>';
+				};
 			};
 
+			function publishData(){
 			//post to HTML:
 			$('tbody').append('<tr><td>'
-			 + snapshot.val().Name
+			 + FBname
 			 + '</td><td>' 
-			 + snapshot.val().Destination 
+			 + FBdestination
 			 + '</td><td>' 
-			 + snapshot.val().Freq 
+			 + FBfreq
 			 + '</td><td>'
-			 + displayArrivalTimeNORM
+			 + nextArrival
 			 + '</td><td>'
 			 + minAway
 			 + '</td></tr>')
+			};
 
+			function calculateTimes (Frequency, FirstArrivalTime){
+
+				for (var i = 0; i < 1440; i++) {//loop through minutes in day to cover all possibilities
+					if (moment().isSameOrBefore(FirstArrivalTime)){//if the current time is less than or equal to the provided 'first arrival time'...
+						minAway = moment(FirstArrivalTime).diff(moment(), "minutes",);//calculate difference between now and arrival time in minutes
+						nextArrival = moment(FirstArrivalTime, normalFormat).format(normalFormat);//the next arrival time will be the provided 'first arrival time' and will display in normal format
+					}
+
+					else {//if the current time is NOT less than or equal to the provided 'first arrival time'...
+						FirstArrivalTime = moment(FirstArrivalTime).add(Frequency, 'm');//add the provided frequency to the provided 'first arrival time'
+						minAway = moment(FirstArrivalTime).diff(moment(), "minutes",);//calculate difference between now and arrival time in minutes
+						nextArrival = moment(normalArrivalTime, normalFormat).format(normalFormat);//the next arrival time will be the original 'first arrival time' in firebase because it is technically the next day
+					};
+				};
+
+				negativeMinAwayFix();//check for negative minAway
+				alertArrivingNow();//alert if train is arriving right now
+			};
+			
+			calculateTimes(FBfreq, militaryArrivalTime);
+			publishData();
     });
+};
+
+calculateAndPublish();
+setInterval(emptyTableBody, 60000);
+setInterval(calculateAndPublish, 60000);
+// if (minAway < 0){//if minutes away comes out to negative, reset time to original start time
+// 		FirstArrivalTime = moment(FirstArrivalTime).add(Frequency, 'm');//add the provided frequency to the provided 'first arrival time'
+// 	};
+
 //----------------------------------------------------------------END OF SCRIPT	
 });
