@@ -45,7 +45,6 @@ $(document).ready(function() {
 		for (var i = 0; i < $('form').length; i++) {
 			$('form')[i].reset();
 		};
-	//$('.submit').click END -----------------------------------------------
 	});
 
 	//listen for additions made and publish accordingly, by timestamp:
@@ -62,6 +61,16 @@ $(document).ready(function() {
 			var minAway = moment(militaryArrivalTime).diff(moment(), "minutes",);//calculate difference between now and arrival time in minutes
 			var displayArrivalTimeNORM = moment(FBarrivalTime, normalFormat).format(normalFormat);//display next arrival time in html as normal format
 
+			if (minAway < 0){//if minutes away comes out to negative, add 1440 to it to show accurate calculate. 1440 being number of min in a day
+				minAway = minAway + 1440;
+			};
+
+			if (minAway === 0){//if min away equals zero, reset min away to new time based on freq, newtime = current time + freq
+
+				console.log('zero');
+
+			};
+
 			//post to HTML:
 			$('tbody').append('<tr><td>'
 			 + snapshot.val().Name
@@ -76,6 +85,5 @@ $(document).ready(function() {
 			 + '</td></tr>')
 
     });
-
 //----------------------------------------------------------------END OF SCRIPT	
 });
