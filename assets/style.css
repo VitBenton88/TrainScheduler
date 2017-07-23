@@ -15,3 +15,16 @@ form {
 	color: red;
 	font-weight: bolder;
 }
+
+.glyphicon-remove {
+	color: black;
+}
+
+.glyphicon-remove:hover {
+	cursor: pointer;
+}
+
+.glyphicon-remove:active {
+	color: black !important;
+}
+

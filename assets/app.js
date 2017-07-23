@@ -19,17 +19,16 @@ $(document).ready(function() {
 	
 
 	function publishTime (){
-	var currentTimeFormat = "hh:mm:ss A";
-	var currentTime = moment(moment(), currentTimeFormat);
-	var currentTimeFormatted = currentTime.format(currentTimeFormat);
-	$('#theTime').html('Current Time: ' + currentTimeFormatted)
-	};
+		var currentTimeFormat = "hh:mm:ss A";
+		var currentTime = moment(moment(), currentTimeFormat);
+		var currentTimeFormatted = currentTime.format(currentTimeFormat);
+		$('#theTime').html('Current Time: ' + currentTimeFormatted)
+		};
 
 	setInterval(publishTime, 1000);
 
 	//	DISPLAY CURRENT TIME END --------------------
 	
-
 	$('.submit').click(function(){
 		event.preventDefault();
 		var newTrainName = $('#TrainName').val().trim();
@@ -77,14 +76,14 @@ $(document).ready(function() {
 			var FBarrivalTime = snapshot.val().firstArrival;//capture arrival time from firebase
 
    			var militaryFormat = "HH:mm";//set format for military time display
-   			var normalFormat = "hh:mm A"//set format for normal time display
+   			var normalFormat = "hh:mm A";//set format for normal time display
     		var militaryArrivalTime = moment(FBarrivalTime, militaryFormat);//format arrival time from firebase to display as military time
     		var normalArrivalTime = moment(FBarrivalTime, normalFormat);//format arrival time from firebase to display as normal time
     		var nextArrival;
 			var minAway;
 
-			function negativeMinAwayFix (){
-				if (minAway < 0){//if minutes away comes out to negative, reset time to original start time
+			function negativeMinAwayFix (){//if minutes away comes out to negative, reset time to original start time
+				if (minAway < -1){
 					minAway = minAway + 1440;//add total minutes in day (1440) to estimate because this will be a negative number otherwise
 				};
 			};
@@ -95,19 +94,20 @@ $(document).ready(function() {
 				};
 			};
 
-			function publishData(){
-			//post to HTML:
-			$('tbody').append('<tr><td>'
-			 + FBname
-			 + '</td><td>' 
-			 + FBdestination
-			 + '</td><td>' 
-			 + FBfreq
-			 + '</td><td>'
-			 + nextArrival
-			 + '</td><td>'
-			 + minAway
-			 + '</td></tr>')
+			function publishData(){//post to HTML:
+				$('tbody').append('<tr><td>'
+				 + FBname
+				 + '</td><td>' 
+				 + FBdestination
+				 + '</td><td>' 
+				 + FBfreq
+				 + '</td><td>'
+				 + nextArrival
+				 + '</td><td>'
+				 + minAway
+				 + '</td><td>'
+				 + '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>'
+				 + '</td></tr>')
 			};
 
 			function calculateTimes (Frequency, FirstArrivalTime){
@@ -131,15 +131,29 @@ $(document).ready(function() {
 			
 			calculateTimes(FBfreq, militaryArrivalTime);
 			publishData();
-    });
-};
+    	});
+	};
 
 calculateAndPublish();
 setInterval(emptyTableBody, 60000);
 setInterval(calculateAndPublish, 60000);
-// if (minAway < 0){//if minutes away comes out to negative, reset time to original start time
-// 		FirstArrivalTime = moment(FirstArrivalTime).add(Frequency, 'm');//add the provided frequency to the provided 'first arrival time'
-// 	};
+
+	$('body').on('click','.glyphicon-remove',function(){//delete children from FB when remove symbol is clicked
+
+		var captureRow = $(this).closest('tr');//capture row that is being deleted
+		var capturedRowName = $(":first-child", captureRow).html();//capture name in the row that is being deleted
+
+		captureRow.remove();//delete row from html
+
+		database.ref().once("value", function(snapshot){//ref FB database once ...
+
+			console.log(snapshot.key);//returns NULL as is
+				
+				// if (snapshot.val().Name == capturedRowName){
+				// 	database.remove(snapshot.child(this));
+				// };
+			});
+		});
 
 //----------------------------------------------------------------END OF SCRIPT	
 });
