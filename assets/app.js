@@ -1,4 +1,3 @@
-$(document).ready(function() {
 // Initialize Firebase
 	var config = {
 		    apiKey: "AIzaSyDIfwR9O2Fk-QAjzJVil8aBuvz_RMSUgJM",
@@ -28,6 +27,8 @@ $(document).ready(function() {
 	setInterval(publishTime, 1000);
 
 	//	DISPLAY CURRENT TIME END --------------------
+
+$(document).ready(function() {
 	
 	$('.submit').click(function(){
 		event.preventDefault();
@@ -74,6 +75,7 @@ $(document).ready(function() {
 			var FBdestination = snapshot.val().Destination;//capture destination from firebase
 			var FBfreq = snapshot.val().Freq;//capture frequency from firebase
 			var FBarrivalTime = snapshot.val().firstArrival;//capture arrival time from firebase
+			var FBkeyValue = snapshot.key;//store key name to store in data attr, which is used for deleting
 
    			var militaryFormat = "HH:mm";//set format for military time display
    			var normalFormat = "hh:mm A";//set format for normal time display
@@ -106,7 +108,7 @@ $(document).ready(function() {
 				 + '</td><td>'
 				 + minAway
 				 + '</td><td>'
-				 + '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>'
+				 + '<span class="glyphicon glyphicon-remove" aria-hidden="true" data-key =' + FBkeyValue + '></span>'
 				 + '</td></tr>')
 			};
 
@@ -142,16 +144,14 @@ setInterval(calculateAndPublish, 60000);
 
 		var captureRow = $(this).closest('tr');//capture row that is being deleted
 		var capturedRowName = $(":first-child", captureRow).html();//capture name in the row that is being deleted
+		var keyToDelete = $(this).attr('data-key');//capture key name that needs to deleted
 
 		captureRow.remove();//delete row from html
 
 		database.ref().once("value", function(snapshot){//ref FB database once ...
 
-			console.log(snapshot.key);//returns NULL as is
-				
-				// if (snapshot.val().Name == capturedRowName){
-				// 	database.remove(snapshot.child(this));
-				// };
+			database.ref().child(keyToDelete).remove();
+
 			});
 		});
 
