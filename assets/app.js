@@ -29,7 +29,7 @@
 	//	DISPLAY CURRENT TIME END --------------------
 
 $(document).ready(function() {
-	
+
 	$('.submit').click(function(){
 		event.preventDefault();
 		var newTrainName = $('#TrainName').val().trim();
@@ -68,7 +68,7 @@ $(document).ready(function() {
 	};
 
 	//listen for additions made and publish accordingly, by timestamp:
-	function calculateAndPublish (){
+
 		database.ref().orderByChild("dateAdded").on("child_added", function(snapshot){
 
 			var FBname = snapshot.val().Name;//capture train name from firebase
@@ -134,11 +134,6 @@ $(document).ready(function() {
 			calculateTimes(FBfreq, militaryArrivalTime);
 			publishData();
     	});
-	};
-
-calculateAndPublish();
-setInterval(emptyTableBody, 60000);
-setInterval(calculateAndPublish, 60000);
 
 	$('body').on('click','.glyphicon-remove',function(){//delete children from FB when remove symbol is clicked
 
