@@ -36,3 +36,7 @@ form {
 .updateFormRow {
 	display: none;
 }
+
+.panel {
+	overflow: auto;
+}
