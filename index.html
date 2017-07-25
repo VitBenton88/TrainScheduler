@@ -47,7 +47,7 @@
 		<!--- jumbotron END -->
 
 		<!--- panel -->
-	<div class="row">
+	<div class="row trainTable">
 		<div class="col col-12">
 
 			<div class="panel panel-info">
@@ -62,6 +62,7 @@
 						    <th>Next Arrival</th> 
 						    <th>Minutes Away</th>
 						    <th>Remove</th>
+						    <th>Update</th>
 		  				</tr>
 		  			</thead>
 	  				<tbody>
@@ -76,7 +77,7 @@
 
 		<!--- form -->
 
-	<div class="row">
+	<div class="row addFormRow">
 		<div class="col col-12">
 
 			<div class="panel panel-success">
@@ -106,7 +107,7 @@
 						</div>
 
 						<button type="submit" class="btn btn-success submit">Submit</button>
-						<div class="alert alert-danger" role="alert">Please Fill Out Form Completely</div>
+						<div class="alert alert-danger addFormAlert" role="alert">Please Fill Out Form Completely</div>
 						
 				</form>
 			</div>
@@ -114,6 +115,46 @@
 		</div>
 	</div>
 	<!--- form END -->
+
+		<div class="row updateFormRow">
+		<div class="col col-12">
+
+			<div class="panel panel-warning">
+				<div class="panel-heading updateFormHeading"><b></b></div>
+
+				<form role="form">
+					<div class="form-group">
+						<div class="form-group">
+							<label for="Train Name">New Train Name</label>
+							<input type="text" class="form-control" id="updateTrainName">
+						</div>
+
+						<div class="form-group">
+							<label for="Destination">New Destination</label>
+							<input type="text" class="form-control" id="updateDestination">
+						</div>
+
+						<div class="form-group">
+							<label for="First Train Time">New First Train Time (HH:mm military time)</label>
+							<input type="text" class="form-control" id="updateFirstTrainTime">
+						</div>
+
+						<div class="form-group">
+							<label for="Frequency">New Frequency (min)</label>
+							<input type="number" class="form-control" id="updateFreq">
+						</div>
+						</div>
+
+						<button type="submit" class="btn btn-success updateTrain">Update Train</button>
+						<button type="submit" class="btn btn-danger cancelUpdate">Cancel</button>
+						<div class="alert alert-danger updateFormAlert" role="alert">Please Fill Out Form Completely</div>
+						
+				</form>
+			</div>
+
+		</div>
+	</div>
+	<!--- update form END -->
 </div>
 
 </body>

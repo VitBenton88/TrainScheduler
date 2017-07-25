@@ -2,7 +2,12 @@ form {
 	margin: 8px;
 }
 
-.alert-danger {
+.addFormAlert {
+	margin-top: 5px;
+	display: none;
+}
+
+.updateFormAlert {
 	margin-top: 5px;
 	display: none;
 }
@@ -28,3 +33,6 @@ form {
 	color: black !important;
 }
 
+.updateFormRow {
+	display: none;
+}
